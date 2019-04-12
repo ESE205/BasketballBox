@@ -1,18 +1,57 @@
+body{
+	font-family: Arial
+}
+
 .button{
-	background-color: rgb(255, 90, 68);
+	background-color: hsl(220, 100%, 60%);
+	width: 70px; 
 	border-radius: 5px;
     	text-align: center;
-    	font-size: 24px;
+    	font-size: 20px;
     	padding: 10px;
     	margin: 10px 0px 0px 0px;
     	color: rgb(32,32,32);
     	cursor: pointer;
+	float: left; 
+	position: relative; 
+	top: -35px; 
 }
 
-#search {
-	width: 60%;
-	margin-left: auto; 
-	margin-right: auto; 
-	border: 1px solid #ddd; 
-	margin-top: 20px; 
+.button:hover {
+	background-color: hsl(220, 100%, 50%);
+}
+
+.button:hover {
+	background-color: hsl(220, 100%, 40%);
+}
+
+#player-search, #team-search p{
+	font-size: 24px;
+}
+
+#team-search, #player-search {
+	width: 45%; 
+	float: left; 
+	margin-top: 10px; 
+	margin-right: 20px; 
+}
+
+#team-search-box, #player-search-box{
+	width: 70%; 
+	border: none; 
+	border-bottom: 1px solid #aaa;
+	float: left; 
+	outline: none;
+}
+
+#results{
+	clear: both;
+}
+
+.hidden{
+	display: none; 
+}
+
+.show{
+	display: inline-block;
 }

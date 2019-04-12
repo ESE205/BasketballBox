@@ -69,11 +69,52 @@ app.post('/transmit', function (req, res) {
 });
 
 //retreives all hits sustained by that player
-//currently just returns that player's first and last name, if they exist
+app.get('/getHits/:playerID', async (req, res) => {
+	let qString = 'SELECT * FROM hits WHERE player_id = ?'
+	const response = await query(qString, [req.params.playerID]);
+	if(response.length==0){
+		res.send("no player with that ID with hits of that threshold");
+	}
+	else{
+		console.log("number of hits sustained by this player: " + response.length);
+		res.json({
+			"hits": response
+		});
+	}
+});
+
+//TODO
+//retreives all hits sustained by that player
+app.get('/getHits/:playerID/:hitThreshold', async (req, res) => {
+	let threshold = parseInt(req.params.hitThreshold,10);
+	let qString = 'SELECT * FROM hits WHERE player_id = ?'
+	const response = await query(qString, [req.params.playerID]);
+	if(response.length==0){
+		res.send("no player with that ID with hits of that threshold");
+	}
+	else{
+		console.log("number of hits sustained by this player: " + response.length);
+		for(i = 0; i < response.length; i++){
+			let hit = response[i];
+			let x = hit.x_axis;
+			let y = hit.y_axis;
+			let z = hit.z_axis; 
+			//formula and calculations
+			
+			let net = x*x + y*y + z*z; 
+		}
+		res.json({
+			"hits": response
+		});
+	}
+});
+
+//retreives player's first and last name
 app.get('/getPlayer/:playerID', async (req, res) => {
 	console.log("Searching for player number " + req.params.playerID);
 	let qString = 'SELECT * FROM players WHERE id = ?';
 	const response = await query(qString, [req.params.playerID]);
+	console.log(response);
 	if(response.length==0){
 		console.log("couldn't find a player with that ID");
 		res.send("no player with that ID");
@@ -81,24 +122,9 @@ app.get('/getPlayer/:playerID', async (req, res) => {
 	else{
 		console.log("found a player with that ID");
 		res.json({
-			"first name": response[0].f_name,
-			"last name": response[0].l_name
+			"player": response
 		});
 		console.log("returning player number " + req.params.playerID + " with name " + response[0].f_name + " " + response[0].l_name);
-	}
-});
-
-
-//retreives all hits sustained by that player over a certain threshold
-app.get('/getPlayer/:playerID/:hitThreshold', async (req, res) => {
-	let threshold = parseInt(req.params.hitThreshold,10);
-	let qString = 'SELECT * FROM hits WHERE player_id = ? AND avg_force > ?'
-	const response = await query(qString, [req.params.playerID, threshold]);
-	if(response.length==0){
-		res.send("no player with that ID with hits of that threshold");
-	}
-	else{
-		res.send("here's the response from sql: " + response[0].f_name + response[0].l_name);
 	}
 });
 
@@ -117,6 +143,7 @@ app.get('/getTeam/:teamID', async (req, res) => {
 	
 	}
 });
+
 
 // match all file requests to public folder (this allows js/css links in your html)
 // this means to get to our index page, you can either go to localhost:PORT/ or localhost:/PORT/index.html
