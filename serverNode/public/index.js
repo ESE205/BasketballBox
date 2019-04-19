@@ -44,10 +44,10 @@ async function searchPlayer(){
 	const hits = data.hits; 
 	
 	//adds table of hits to webpage
-	let htmlString = "<tr><th>X</th><th>Y</th><th>Z</th><th>timestamp</th></tr>"
+	let htmlString = "<tr><th>max</th><th>avg</th><th>timestamp</th></tr>"
 	//updates table with results
 	for(i = 0; i < hits.length; i++){
-		htmlString += "<tr><td>" + hits[i].x_axis + "</td><td>" + hits[i].y_axis + "</td><td>" + hits[i].z_axis + "</td><td>" + hits[i].timestamp + "</td></tr>"
+		htmlString += "<tr><td>" + hits[i].max_force + "</td><td>" + hits[i].avg_force + "</td><td>" + hits[i].timestamp + "</td></tr>"
 	}
 	const resultsTable = document.getElementById("player-results");
 	resultsTable.innerHTML = htmlString;

@@ -61,22 +61,22 @@ app.get('/', (req, res) => {
 
 app.post('/receiveData', (req, res) => {
 	console.log(req.body.data);
-	console.log("data received:");
+	console.log("data received");
 	let data = req.body.data;
 	for(hit = 0; hit < data.length; hit++){
-		let x = data[hit].xAxis;
-		let y = data[hit].yAxis;
-		let z = data[hit].zAxis;
+		let avg = data[hit].avg;
+		let max = data[hit].max;
 		let timestamp = data[hit].timestamp;
-		console.log("\n x: " + x + "\n y: " + y + "\n z:" + z);
-		sendToMySql(1, timestamp, x, y, z);
+		console.log("\n avg: " + avg + "\n max: " + max);
+		sendToMySql(1, timestamp, avg, max);
 	}
 });
 
-async function sendToMySql(playerID, timestamp, x, y, z) {
-	let qString = 'INSERT INTO hits (player_id, marked_bad, timestamp, x_axis, y_axis, z_axis) values (?, false, ?, ?, ?, ?)';
-	await query(qString, [playerID, timestamp, x, y, z]);
+async function sendToMySql(playerID, timestamp, avg, max) {
+	let qString = 'INSERT INTO hits (player_id, marked_bad, timestamp, avg_force, max_force) values (?, false, ?, ?, ?)';
+	await query(qString, [playerID, timestamp, avg, max]);
 };
+
 
 // match all file requests to public folder (this allows js/css links in your html)
 // this means to get to our index page, you can either go to localhost:PORT/ or localhost:/PORT/index.html

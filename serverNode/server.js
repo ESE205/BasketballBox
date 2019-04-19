@@ -83,26 +83,31 @@ app.get('/getHits/:playerID', async (req, res) => {
 	}
 });
 
-//TODO
-//retreives all hits sustained by that player
-app.get('/getHits/:playerID/:hitThreshold', async (req, res) => {
-	let threshold = parseInt(req.params.hitThreshold,10);
-	let qString = 'SELECT * FROM hits WHERE player_id = ?'
+//retreives all hits sustained by that player where the max force is above a threshold
+app.get('/getHits/:playerID/max/:maxHitThreshold', async (req, res) => {
+	let threshold = parseInt(req.params.maxHitThreshold,10);
+	let qString = 'SELECT * FROM hits WHERE player_id = ? AND max_force > threshold'
 	const response = await query(qString, [req.params.playerID]);
 	if(response.length==0){
 		res.send("no player with that ID with hits of that threshold");
 	}
 	else{
-		console.log("number of hits sustained by this player: " + response.length);
-		for(i = 0; i < response.length; i++){
-			let hit = response[i];
-			let x = hit.x_axis;
-			let y = hit.y_axis;
-			let z = hit.z_axis; 
-			//formula and calculations
-			
-			let net = x*x + y*y + z*z; 
-		}
+		res.json({
+			"hits": response
+		});
+	}
+});
+
+
+//retreives all hits sustained by that player where the average force is above a threshold
+app.get('/getHits/:playerID/avg/:avgHitThreshold', async (req, res) => {
+	let threshold = parseInt(req.params.avgHitThreshold,10);
+	let qString = 'SELECT * FROM hits WHERE player_id = ? AND avg_force > threshold'
+	const response = await query(qString, [req.params.playerID]);
+	if(response.length==0){
+		res.send("no player with that ID with hits of that threshold");
+	}
+	else{
 		res.json({
 			"hits": response
 		});
