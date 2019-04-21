@@ -22,7 +22,7 @@ async function searchTeam(){
 	for(i = 0; i < players.length; i++){
 		htmlString += "<tr><td>" + players[i].id + "</td><td>" + players[i].f_name + "</td><td>" + players[i].l_name + "</td></tr>"
 	}
-	const resultsTable = document.getElementById("team-results");
+	const resultsTable = document.getElementById("team-results-table");
 	resultsTable.innerHTML = htmlString;
 	
 	//remove welcome message from top
@@ -47,10 +47,14 @@ async function searchPlayer(){
 	let htmlString = "<tr><th>max</th><th>avg</th><th>timestamp</th></tr>"
 	//updates table with results
 	for(i = 0; i < hits.length; i++){
-		htmlString += "<tr><td>" + hits[i].max_force + "</td><td>" + hits[i].avg_force + "</td><td>" + hits[i].timestamp + "</td></tr>"
+		date = new Date(hits[i].timestamp);
+		htmlString += "<tr><td>" + hits[i].max_force + "</td><td>" + hits[i].avg_force + "</td><td>" + date + "</td></tr>"
 	}
-	const resultsTable = document.getElementById("player-results");
+	const resultsTable = document.getElementById("player-results-table");
 	resultsTable.innerHTML = htmlString;
+
+	//ADD CHART TO WEBPAGE
+	addChart(hits)
 	
 	//remove welcome message from top
 	document.getElementById("player-results").classList.remove("hidden");
@@ -59,3 +63,111 @@ async function searchPlayer(){
 }
 
 document.getElementById("player-submit").addEventListener("click", searchPlayer);
+
+function addChart(hits){
+	var dataSet = []
+
+	for(i = 0; i < hits.length; i++){
+		dataSet.push({
+			x:hits[i].timestamp,
+			y:new Date(hits[i].max_force)
+		});
+	}
+	
+	var options = {responsive: true};	
+
+	//access chart element by ID
+	var chart = document.getElementById("player-results-chart");
+	var myChart = new Chart(chart, {
+		type: "scatter", 
+		data: {
+			datasets: [{
+				label: "Hits",
+				data: dataSet,
+			}]
+		}, 
+		options: options
+	});
+}
+
+async function thresholdFilter(){
+	console.log("Hello from filter by threshold!");
+
+	//retreives the playerID to search from the input text box
+	const playerID = document.getElementById('player-search-box').value;
+
+	//retreives the threshold to limit by from the input text box
+	const threshold = document.getElementById('threshold-filter-text-box').value;
+
+	//fetches team members and logs the response
+	const player = await fetch(`/getHits/${playerID}/max/${threshold}`);
+	console.log(player);
+	
+	const data = await player.json();
+	console.log("received response");
+	console.log(data);
+	const hits = data.hits; 
+	
+	//adds table of hits to webpage
+	let htmlString = "<tr><th>max</th><th>avg</th><th>timestamp</th></tr>"
+	//updates table with results
+	for(i = 0; i < hits.length; i++){
+		date = new Date(hits[i].timestamp);
+		htmlString += "<tr><td>" + hits[i].max_force + "</td><td>" + hits[i].avg_force + "</td><td>" + date + "</td></tr>"
+	}
+	const resultsTable = document.getElementById("player-results-table");
+	resultsTable.innerHTML = htmlString;
+
+	//ADD CHART
+	addChart(hits);
+
+	//remove welcome message from top
+	document.getElementById("player-results").classList.remove("hidden");
+	document.getElementById("welcome").classList.add("hidden");
+	document.getElementById("team-results").classList.add("hidden");
+}
+
+document.getElementById("threshold-filter-submit").addEventListener("click", thresholdFilter);
+
+async function timeFilter(){
+	console.log("Hello from filter by time!");
+
+	//retreives the playerID to search from the input text box
+	const playerID = document.getElementById('player-search-box').value;
+
+	//retreives the threshold to limit by from the input text box
+	const timeAsDate = document.getElementById('time-filter-text-box').value;
+	
+	const timeAsUnix = new Date(timeAsDate).getTime() /1000;
+	
+	console.log(timeAsUnix);
+
+	//fetches team members and logs the response
+	const player = await fetch(`/getHits/${playerID}/time/${timeAsUnix}`);
+	console.log(player);
+	
+	const data = await player.json();
+	console.log("received response");
+	console.log(data);
+	const hits = data.hits; 
+	
+	//adds table of hits to webpage
+	let htmlString = "<tr><th>max</th><th>avg</th><th>timestamp</th></tr>"
+	//updates table with results
+	for(i = 0; i < hits.length; i++){
+		date = new Date(hits[i].timestamp);
+		htmlString += "<tr><td>" + hits[i].max_force + "</td><td>" + hits[i].avg_force + "</td><td>" + date + "</td></tr>"
+	}
+	const resultsTable = document.getElementById("player-results-table");
+	resultsTable.innerHTML = htmlString;
+
+	//ADD CHART
+	addChart(hits);
+
+	//remove welcome message from top
+	document.getElementById("player-results").classList.remove("hidden");
+	document.getElementById("welcome").classList.add("hidden");
+	document.getElementById("team-results").classList.add("hidden");
+}
+
+document.getElementById("time-filter-submit").addEventListener("click", timeFilter);

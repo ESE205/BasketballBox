@@ -86,8 +86,8 @@ app.get('/getHits/:playerID', async (req, res) => {
 //retreives all hits sustained by that player where the max force is above a threshold
 app.get('/getHits/:playerID/max/:maxHitThreshold', async (req, res) => {
 	let threshold = parseInt(req.params.maxHitThreshold,10);
-	let qString = 'SELECT * FROM hits WHERE player_id = ? AND max_force > threshold'
-	const response = await query(qString, [req.params.playerID]);
+	let qString = 'SELECT * FROM hits WHERE player_id = ? AND max_force > ?'
+	const response = await query(qString, [req.params.playerID, threshold]);
 	if(response.length==0){
 		res.send("no player with that ID with hits of that threshold");
 	}
@@ -104,6 +104,20 @@ app.get('/getHits/:playerID/avg/:avgHitThreshold', async (req, res) => {
 	let threshold = parseInt(req.params.avgHitThreshold,10);
 	let qString = 'SELECT * FROM hits WHERE player_id = ? AND avg_force > threshold'
 	const response = await query(qString, [req.params.playerID]);
+	if(response.length==0){
+		res.send("no player with that ID with hits of that threshold");
+	}
+	else{
+		res.json({
+			"hits": response
+		});
+	}
+});
+
+//retreives all hits sustained by that player where the date is more recent than the specified threshold
+app.get('/getHits/:playerID/time/:timeAsUnix', async (req, res) => {
+	let qString = 'SELECT * FROM hits WHERE player_id = ? AND timestamp > ?'
+	const response = await query(qString, [req.params.playerID, req.params.timeAsUnix]);
 	if(response.length==0){
 		res.send("no player with that ID with hits of that threshold");
 	}

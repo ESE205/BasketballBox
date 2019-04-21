@@ -60,16 +60,16 @@ app.get('/', (req, res) => {
 });
 
 app.post('/receiveData', (req, res) => {
-	console.log(req.body.data);
 	console.log("data received");
+	console.log(req.body.data);
 	let data = req.body.data;
 	for(hit = 0; hit < data.length; hit++){
 		let avg = data[hit].avg;
 		let max = data[hit].max;
 		let timestamp = data[hit].timestamp;
-		console.log("\n avg: " + avg + "\n max: " + max);
 		sendToMySql(1, timestamp, avg, max);
 	}
+	res.send("added to server");
 });
 
 async function sendToMySql(playerID, timestamp, avg, max) {

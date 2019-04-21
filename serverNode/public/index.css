@@ -21,31 +21,54 @@ body{
 	background-color: hsl(220, 100%, 50%);
 }
 
-.button:hover {
+.button:active {
 	background-color: hsl(220, 100%, 40%);
+}
+
+.small-button{
+	background-color: hsl(120, 100%, 60%);
+	width: 70px; 
+	border-radius: 5px;
+    	text-align: center;
+    	font-size: 20px;
+    	padding: 10px;
+    	margin: 10px 0px 0px 0px;
+    	color: rgb(32,32,32);
+    	cursor: pointer;
+	float: left; 
+	position: relative; 
+	top: -35px; 
+}
+
+.small-button:hover {
+	background-color: hsl(120, 100%, 45%);
+}
+
+.small-button:active {
+	background-color: hsl(120, 100%, 30%);
 }
 
 #player-search, #team-search p{
 	font-size: 24px;
 }
 
-#team-search, #player-search {
+#time-filter, #threshold-filter p{
+	font-size: 20px;
+}
+
+#team-search, #player-search, #time-filter, #threshold-filter {
 	width: 45%; 
 	float: left; 
 	margin-top: 10px; 
 	margin-right: 20px; 
 }
 
-#team-search-box, #player-search-box{
+#team-search-box, #player-search-box, #time-filter-text-box, #threshold-filter-text-box{
 	width: 70%; 
 	border: none; 
 	border-bottom: 1px solid #aaa;
 	float: left; 
 	outline: none;
-}
-
-#results{
-	clear: both;
 }
 
 .hidden{
@@ -54,4 +77,19 @@ body{
 
 .show{
 	display: inline-block;
+}
+
+.player-results, .team-results{
+	width: 100%;
+	border-collapse: collapse;
+}
+
+th, td {
+	padding: 8px; 
+	text-align: left; 
+	border-bottom: 1 px solid #ddd; 
+}
+
+tr:hover{
+	background-color: #f2f2f2;
 }
