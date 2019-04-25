@@ -161,7 +161,7 @@ async function timeFilter(){
 	//retreives the threshold to limit by from the input text box
 	const timeAsDate = document.getElementById('time-filter-text-box').value;
 	
-	const timeAsUnix = new Date(timeAsDate).getTime() /1000;
+	const timeAsUnix = new Date(timeAsDate).getTime();
 	
 	console.log(timeAsUnix);
 
@@ -175,7 +175,7 @@ async function timeFilter(){
 	if(hits.length == 0){
 			alert("No hits past this date");
 	}
-		else{
+	else{
 		//adds table of hits to webpage
 		let htmlString = "<tr><th>max</th><th>avg</th><th>timestamp</th></tr>"
 		//updates table with results
