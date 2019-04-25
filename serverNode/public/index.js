@@ -15,16 +15,19 @@ async function searchTeam(){
 	console.log("received response");
 	console.log(data);
 	const players = data.players;	
-
-	//adds table of players to webpage
-	let htmlString = "<tr><th>ID</th><th>First Name</th><th>Last Name</th></tr>"
-	//updates table with results
-	for(i = 0; i < players.length; i++){
-		htmlString += "<tr><td>" + players[i].id + "</td><td>" + players[i].f_name + "</td><td>" + players[i].l_name + "</td></tr>"
+	if(players.length == 0){
+		alert("No team with this ID found");
 	}
-	const resultsTable = document.getElementById("team-results-table");
-	resultsTable.innerHTML = htmlString;
-	
+	else{
+		//adds table of players to webpage
+		let htmlString = "<tr><th>ID</th><th>First Name</th><th>Last Name</th></tr>"
+		//updates table with results
+		for(i = 0; i < players.length; i++){
+			htmlString += "<tr><td>" + players[i].id + "</td><td>" + players[i].f_name + "</td><td>" + players[i].l_name + "</td></tr>"
+		}
+		const resultsTable = document.getElementById("team-results-table");
+		resultsTable.innerHTML = htmlString;
+	}
 	//remove welcome message from top
 	document.getElementById("team-results").classList.remove("hidden");
 	document.getElementById("welcome").classList.add("hidden");
@@ -37,25 +40,30 @@ async function searchPlayer(){
 	console.log("Hello from player search!");
 	const playerID = document.getElementById('player-search-box').value;
 	const player = await fetch(`/getHits/${playerID}`);
+	console.log("player");
 	console.log(player);
 	const data = await player.json();
 	console.log("received response");
 	console.log(data);
 	const hits = data.hits; 
-	
-	//adds table of hits to webpage
-	let htmlString = "<tr><th>max</th><th>avg</th><th>timestamp</th></tr>"
-	//updates table with results
-	for(i = 0; i < hits.length; i++){
-		date = new Date(hits[i].timestamp);
-		htmlString += "<tr><td>" + hits[i].max_force + "</td><td>" + hits[i].avg_force + "</td><td>" + date + "</td></tr>"
+	if(hits.length==0){
+		console.log("adding no such player paragraph");
+		alert("No player with this ID found");
 	}
-	const resultsTable = document.getElementById("player-results-table");
-	resultsTable.innerHTML = htmlString;
+	else{
+		//adds table of hits to webpage
+		let htmlString = "<tr><th>max</th><th>avg</th><th>timestamp</th></tr>"
+		//updates table with results
+		for(i = 0; i < hits.length; i++){
+			date = new Date(hits[i].timestamp);
+			htmlString += "<tr><td>" + hits[i].max_force + "</td><td>" + hits[i].avg_force + "</td><td>" + date + "</td></tr>"
+		}
+		const resultsTable = document.getElementById("player-results-table");
+		resultsTable.innerHTML = htmlString;
 
-	//ADD CHART TO WEBPAGE
-	addChart(hits)
-	
+		//ADD CHART TO WEBPAGE
+		addChart(hits)
+	}
 	//remove welcome message from top
 	document.getElementById("player-results").classList.remove("hidden");
 	document.getElementById("welcome").classList.add("hidden");
@@ -74,7 +82,19 @@ function addChart(hits){
 		});
 	}
 	
-	var options = {responsive: true};	
+	var options = {
+		responsive: true,
+		scales: {
+			xAxes:[{
+				ticks: {
+					callback: function(label, index, labels){
+						var date = new Date(label);
+						return (date.getYear()+1900) + "-" + (date.getMonth()+1) + "-" + date.getDate();
+					}
+				}
+			}]
+		}
+	};	
 
 	//access chart element by ID
 	var chart = document.getElementById("player-results-chart");
@@ -107,20 +127,23 @@ async function thresholdFilter(){
 	console.log("received response");
 	console.log(data);
 	const hits = data.hits; 
-	
-	//adds table of hits to webpage
-	let htmlString = "<tr><th>max</th><th>avg</th><th>timestamp</th></tr>"
-	//updates table with results
-	for(i = 0; i < hits.length; i++){
-		date = new Date(hits[i].timestamp);
-		htmlString += "<tr><td>" + hits[i].max_force + "</td><td>" + hits[i].avg_force + "</td><td>" + date + "</td></tr>"
+	if(hits.length == 0){
+		alert("No hits above this threshold");
 	}
-	const resultsTable = document.getElementById("player-results-table");
-	resultsTable.innerHTML = htmlString;
+	else{
+		//adds table of hits to webpage
+		let htmlString = "<tr><th>max</th><th>avg</th><th>timestamp</th></tr>"
+		//updates table with results
+		for(i = 0; i < hits.length; i++){
+			date = new Date(hits[i].timestamp);
+			htmlString += "<tr><td>" + hits[i].max_force + "</td><td>" + hits[i].avg_force + "</td><td>" + date + "</td></tr>"
+		}
+		const resultsTable = document.getElementById("player-results-table");
+		resultsTable.innerHTML = htmlString;
 
-	//ADD CHART
-	addChart(hits);
-
+		//ADD CHART
+		addChart(hits);
+	}
 	//remove welcome message from top
 	document.getElementById("player-results").classList.remove("hidden");
 	document.getElementById("welcome").classList.add("hidden");
@@ -145,25 +168,27 @@ async function timeFilter(){
 	//fetches team members and logs the response
 	const player = await fetch(`/getHits/${playerID}/time/${timeAsUnix}`);
 	console.log(player);
-	
 	const data = await player.json();
 	console.log("received response");
 	console.log(data);
 	const hits = data.hits; 
-	
-	//adds table of hits to webpage
-	let htmlString = "<tr><th>max</th><th>avg</th><th>timestamp</th></tr>"
-	//updates table with results
-	for(i = 0; i < hits.length; i++){
-		date = new Date(hits[i].timestamp);
-		htmlString += "<tr><td>" + hits[i].max_force + "</td><td>" + hits[i].avg_force + "</td><td>" + date + "</td></tr>"
+	if(hits.length == 0){
+			alert("No hits past this date");
 	}
-	const resultsTable = document.getElementById("player-results-table");
-	resultsTable.innerHTML = htmlString;
+		else{
+		//adds table of hits to webpage
+		let htmlString = "<tr><th>max</th><th>avg</th><th>timestamp</th></tr>"
+		//updates table with results
+		for(i = 0; i < hits.length; i++){
+			date = new Date(hits[i].timestamp);
+			htmlString += "<tr><td>" + hits[i].max_force + "</td><td>" + hits[i].avg_force + "</td><td>" + date + "</td></tr>"
+		}
+		const resultsTable = document.getElementById("player-results-table");
+		resultsTable.innerHTML = htmlString;
 
-	//ADD CHART
-	addChart(hits);
-
+		//ADD CHART
+		addChart(hits);
+	}
 	//remove welcome message from top
 	document.getElementById("player-results").classList.remove("hidden");
 	document.getElementById("welcome").classList.add("hidden");

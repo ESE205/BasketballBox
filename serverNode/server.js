@@ -73,7 +73,11 @@ app.get('/getHits/:playerID', async (req, res) => {
 	let qString = 'SELECT * FROM hits WHERE player_id = ?'
 	const response = await query(qString, [req.params.playerID]);
 	if(response.length==0){
-		res.send("no player with that ID with hits of that threshold");
+		console.log("no such player");
+		//res.send("no player with that ID with hits of that threshold");
+		res.json({
+			"hits": response
+		});
 	}
 	else{
 		console.log("number of hits sustained by this player: " + response.length);
@@ -89,7 +93,10 @@ app.get('/getHits/:playerID/max/:maxHitThreshold', async (req, res) => {
 	let qString = 'SELECT * FROM hits WHERE player_id = ? AND max_force > ?'
 	const response = await query(qString, [req.params.playerID, threshold]);
 	if(response.length==0){
-		res.send("no player with that ID with hits of that threshold");
+		console.log("no hits above this threshold");
+		res.json({
+			"hits": response
+		});
 	}
 	else{
 		res.json({
@@ -105,7 +112,10 @@ app.get('/getHits/:playerID/avg/:avgHitThreshold', async (req, res) => {
 	let qString = 'SELECT * FROM hits WHERE player_id = ? AND avg_force > threshold'
 	const response = await query(qString, [req.params.playerID]);
 	if(response.length==0){
-		res.send("no player with that ID with hits of that threshold");
+		console.log("no hits above this threshold");
+		res.json({
+			"hits": response
+		});
 	}
 	else{
 		res.json({
@@ -119,9 +129,13 @@ app.get('/getHits/:playerID/time/:timeAsUnix', async (req, res) => {
 	let qString = 'SELECT * FROM hits WHERE player_id = ? AND timestamp > ?'
 	const response = await query(qString, [req.params.playerID, req.params.timeAsUnix]);
 	if(response.length==0){
-		res.send("no player with that ID with hits of that threshold");
+		console.log("No hits above this threshold");
+		res.json({
+			"hits": response
+		});
 	}
-	else{
+	else{	
+		console.log("There were hits above this treshold");
 		res.json({
 			"hits": response
 		});
@@ -152,7 +166,10 @@ app.get('/getTeam/:teamID', async (req, res) => {
 	let qString = 'SELECT players.f_name, players.l_name, players.id FROM teams LEFT JOIN players ON teams.id=players.team WHERE teams.id = ?';
 	const response = await query(qString, [req.params.teamID]);
 	if(response.length==0){
-		res.send("no player with that ID with hits of that threshold");
+		console.log("No team found");
+		res.json({
+			"players": response
+		});
 	}
 	else{
 		console.log("Number of players on this team " + response.length);
